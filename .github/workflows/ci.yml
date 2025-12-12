@@ -1,0 +1,30 @@
+name: Basic HTML CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-html:
+    name: Check index.html has <title>
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Ensure index.html exists
+        run: |
+          if [ ! -f index.html ]; then
+            echo "index.html not found" && exit 1
+          fi
+
+      - name: Check for <title> tag
+        run: |
+          if grep -qi "<title>.*</title>" index.html; then
+            echo "title found — OK"
+          else
+            echo "::error ::index.html is missing a <title> tag" 
+            exit 1
+          fi
